@@ -93,4 +93,42 @@
     left: 185px;
   }
 
+  @media screen and (max-width: 930px) {
+    .searchjob, .searchsalary {
+      display: none;
+    }
+  
+    .searchbar {
+      width: auto;
+    }
+  }
+
+  @media screen and (max-width: 730px) {
+    .searchmenu div:not(:last-of-type) {
+      border: 0;
+    }
+  
+    .searchlocation {
+      display: none;
+    }
+  }
+
+  @media screen and (max-width: 520px) {
+    .searchitem {
+      display: none;
+    }
+  
+    .searchbar {
+      flex-grow: 1;
+    }
+  
+    .searchbar input {
+      padding: 0 0 0 30px;
+    }
+
+    .searchbutton {
+      margin-left: 16px;
+    }
+  }
+
   

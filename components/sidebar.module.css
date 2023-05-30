@@ -109,4 +109,10 @@
     color: var(--active-color);
   }
   
+  @media screen and (max-width: 730px) {
+    .searchtype {
+      display: none;
+    }
+  }
+
   

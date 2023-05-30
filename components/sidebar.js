@@ -1,8 +1,16 @@
 import styles from './sidebar.module.css';
-
+import stylesr from './searchedresult.module.css'
 export default function Sidebar() {
     return (
+        
         <div className={styles.searchtype}>
+            <style>{`
+                @media screen and (max-width: 1300px) {
+                    .${stylesr.detailpage} .${styles.searchtype} {
+                        display: none;
+                    }
+                }
+            `}</style>
             <div className={styles.alert}>
                 <div className={styles.alerttitle}>Create Job Alert</div>
                 <div className={styles.alertsubtitle}>Create a job alert now and never miss a job</div>

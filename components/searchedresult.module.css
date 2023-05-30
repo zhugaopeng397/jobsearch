@@ -502,11 +502,7 @@
       margin-left: 0;
     }
   }
-  @media screen and (maxwidth: 730px) {
-    .searchtype {
-      display: none;
-    }
-  
+  @media screen and (max-width: 730px) {
     .searchedjobs {
       padding-left: 0;
     }
