@@ -1,5 +1,7 @@
 import styles from './topbar.module.css';
 import React, { useState, useEffect } from 'react';
+import styless from './searchbar.module.css';
+import stylesr from './searchedresult.module.css'
 
 export default function Topbar() {
 
@@ -10,11 +12,40 @@ export default function Topbar() {
             e.target.scrollTop > 30
                 ? header.classList.add(styles.headershadow)
                 : header.classList.remove(styles.headershadow);
-            });
+        });
+
+        const toggleButton = document.querySelector(`.${styles.darklight}`);
+        toggleButton.addEventListener("click", () => {
+            document.body.classList.toggle(styles.darkmode);
+        });
         }, []);
 
     return (
     <div id="header" className={styles.header}>
+        <style>{`
+            .${styles.darkmode} .${styles.darklight} svg {
+                fill: #ffce45;
+                stroke: #ffce45;
+            }
+            .${styles.darkmode} .${stylesr.jobcard} svg {
+                box-shadow: none;
+            }
+            .${styles.darkmode} .${styless.searchitem} {
+                color: var(--body-color);
+                border-color: var(--body-color) !important;
+            }
+            .${styles.darkmode} .${styless.searchlocation} svg,
+            .${styles.darkmode} .${styless.searchjob} svg,
+            .${styles.darkmode} .${styless.searchsalary} svg {
+                color: var(--body-color);
+            }
+            .${styles.darkmode} .${stylesr.detailbutton} {
+                background-color: var(--inactive-color);
+                color: var(--subtitle-color);
+            }
+
+        `}</style>
+
         <div className={styles.logo}>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <path xmlns="http://www.w3.org/2000/svg" d="M512 503.5H381.7a48 48 0 01-45.3-32.1L265 268.1l-9-25.5 2.7-124.6L338.2 8.5l23.5 67.1L512 503.5z" fill="#0473ff" data-original="#28b446" />

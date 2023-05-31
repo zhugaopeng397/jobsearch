@@ -79,6 +79,21 @@
     color: var(--body-color);
   }
 
+
+  .darkmode {
+    --body-bg-color: #1d1d1d;
+    --theme-bg-color: #13131a;
+    --header-bg-color: #1c1c24;
+    --alert-bg-color: #292932;
+    --body-color: #fff;
+    --inactive-color: #292932;
+    --time-button: #fff;
+    --level-button: #fff;
+    --active-light-color: #263d63;
+    --border-color: #26262f;
+    --search-border-color: #26262f;
+  }
+
   .darklight svg {
     margin-right: 8px;
     width: 22px;
@@ -86,6 +101,30 @@
     fill: transparent;
     transition: 0.5s;
   }
+
+  .darkmode .darklight svg {
+    fill: #ffce45;
+    stroke: #ffce45;
+  }
+  .darkmode .jobcard svg {
+    box-shadow: none;
+  }
+  .darkmode .searchitem {
+    color: var(--body-color);
+    border-color: var(--body-color);
+    
+  }
+  .darkmode .searchlocation svg,
+  .darkmode .searchjob svg,
+  .darkmode .searchsalary svg {
+    color: var(--body-color);
+  }
+  .darkmode .detailbutton {
+    background-color: var(--inactive-color);
+    color: var(--subtitle-color);
+  }
+
+
 
   .headershadow {
     box-shadow: 0 4px 20px rgba(88, 99, 148, 0.17);
