@@ -24,3 +24,10 @@ export async function getStaticProps() {
     }
   }
 }
+
+// export const getServerSideProps = async () => {
+//   const res = await fetch('http://localhost:3000/jobs')
+//   const repo = await res.json()
+//   console.log("getServerSideProps====",repo);
+//   return { props: { repo } }
+// }
