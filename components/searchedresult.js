@@ -56,6 +56,16 @@ export default function Searchedresult() {
         }))
     }
 
+    async function handleJobApply(job) {
+        const userAddress = '0x9915540CDb0d3692B0BE06017b0f92C52C491857';
+        await (fetch(`http://localhost:3000/nft?jobid=${job.jobid}&useraddress=${userAddress}`).
+            then((res) => res.json()).then((res) => {
+                if (res.result) {
+                    console.log('nft minted!');
+                }
+        }))
+    }
+
     return (
         <div className={styles.searchedjobs}>
             <div className={styles.searchedbar}>
@@ -79,7 +89,7 @@ export default function Searchedresult() {
                             <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.worklevel}</button>
                         </div>
                         <div className={styles.jobcardbuttons}>
-                            <button className={`${styles.searchbuttons} ${styles.cardbuttons}`}>Apply Now</button>
+                            <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => handleJobApply(job)}>Apply Now</button>
                             <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`}>Messages</button>
                         </div>
                     </div>
