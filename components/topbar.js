@@ -2,6 +2,7 @@ import styles from './topbar.module.css';
 import React, { useState, useEffect } from 'react';
 import styless from './searchbar.module.css';
 import stylesr from './searchedresult.module.css'
+import Head from 'next/head';
 
 export default function Topbar() {
 
@@ -19,9 +20,103 @@ export default function Topbar() {
             document.body.classList.toggle(styles.darkmode);
         });
         }, []);
+    
+    const [currAddress, setCurrAddress] = useState('0x');
+
+    let userAddr = '';
+
+
+    //currAddress的值是在组件渲染后才有值的。在 React 中，当您在组件渲染时使用 {currAddress}的值时，React 会将 {currAddress}的值替换为当前状态的值。
+    //在组件渲染后使用 useEffect钩子来打印 {currAddress}的值
+    // useEffect(()=>{
+    //     console.log("currAddress==",currAddress);
+    // }, [currAddress])
+
+    const { keccak256 } = require("ethereum-cryptography/keccak");
+    const { utf8ToBytes } = require("ethereum-cryptography/utils");
+
+    function hashMessage(message) {
+        const bytes = utf8ToBytes("\x19Ethereum Signed Message:\n" + message);
+        const hash = keccak256(bytes);
+        return hash; 
+    }
+
+    async function handleLogon() {
+        const chainId = await window.ethereum.request({method: 'eth_chainId'});
+        if (chainId !== '0x5') {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: '0x5' }],
+            })
+        }
+        //获取登陆地址
+        await window.ethereum.request({ method: 'eth_requestAccounts' ,})
+            .then(() => {
+                const logo = document.querySelector(`.${styles.logon}`);
+                logo.classList.add(styles.logoconnected);
+                const logged = document.querySelector(`.${styles.logged}`);
+                logged.classList.add(styles.loggedconnected);
+            })
+            .catch((error) => {
+                if (error.code === 4001) {
+                    // EIP-1193 userRejectedRequest error
+                    console.log('Please connect to MetaMask.');
+                } else {
+                    console.error(error);
+                }
+            });
+            
+        const ethers = require("ethers");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        await signer.getAddress().then((addr) => {
+            setCurrAddress(addr);
+            userAddr = addr;
+        });
+        //签名消息
+        const message = 'The address is currently logging on the website.';
+        const msg = `0x${Buffer.from(message, 'utf8').toString('hex')}`;
+        console.log("msg===",msg);
+        await window.ethereum.request({
+            method: 'personal_sign',
+            params: [msg, userAddr],
+        }).catch((error) => {
+            if (error.code === -32603) {
+                console.log('User denied message signature.');
+            } else {
+                console.error(error);
+            }
+        });
+    }
+
+    const [showPopup, setShowPopup] = useState(false);
+
+    const handleLogged = () => {
+        setShowPopup(true);
+    }
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    }
+
+    // const handleLogout = async () => {
+    //     const accounts = await window.ethereum.request({
+    //         method: "wallet_requestPermissions",
+    //         params: [{
+    //             eth_accounts: {}
+    //         }]
+    //     }).then(() => ethereum.request({
+    //         method: 'eth_requestAccounts'
+    //     }))
+        
+    //     const account = accounts[0]
+    // }
 
     return (
     <div id="header" className={styles.header}>
+        {/* <Head>
+            <script src="https://cdn.jsdelivr.net/npm/@metamask/detect-provider"></script>
+        </Head> */}
         <style>{`
             .${styles.darkmode} .${styles.darklight} svg {
                 fill: #ffce45;
@@ -71,9 +166,24 @@ export default function Topbar() {
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                 </svg>
             </div>
-            <img className={styles.userprofile} src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" />
-            <div className={styles.username}>Suhayel Nasim</div>
+            {/* <img className={styles.userprofile} src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" />
+            <div className={styles.username}>Suhayel Nasim</div> */}
+            <div className={styles.logon} onClick={() => handleLogon()}>Collect wallet</div>
+            <div className={styles.logged} onClick={handleLogged}></div>
+            {showPopup && (
+                <div className={styles.popup}>
+                    <div className={styles.popupContent}>
+                        <h4>Address: {currAddress}</h4>
+                        {/* <button className={styles.closeButton} onClick={handleLogout}>
+                            Logout
+                        </button> */}
+                        <button className={styles.closeButton} onClick={handleClosePopup}>
+                            Close
+                        </button>
+                    </div>               
+                </div>
+            )}
         </div>
     </div>
-    );
+    ); 
 }

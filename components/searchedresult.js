@@ -66,6 +66,17 @@ export default function Searchedresult() {
         }))
     }
 
+    async function handleJobMessage(job) {
+        const from = '0x9915540cdb0d3692b0be06017b0f92c52c491857';
+        const to = '0x2914dfc8A156C79C61a9877dCc9aD0893B90Ba8C';
+        await (fetch(`http://localhost:3000/nft/transfer?jobid=${job.jobid}&from=${from}&to=${to}`).
+            then((res) => res.json()).then((res) => {
+                if (res.result) {
+                    console.log('nft transferred!');
+                }
+        }))
+    }
+
     return (
         <div className={styles.searchedjobs}>
             <div className={styles.searchedbar}>
@@ -90,7 +101,7 @@ export default function Searchedresult() {
                         </div>
                         <div className={styles.jobcardbuttons}>
                             <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => handleJobApply(job)}>Apply Now</button>
-                            <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`}>Messages</button>
+                            <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`} onClick={() => handleJobMessage(job)}>Messages</button>
                         </div>
                     </div>
                 ))}
