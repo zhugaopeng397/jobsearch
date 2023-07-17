@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styless from './searchbar.module.css';
 import stylesr from './searchedresult.module.css'
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function Topbar() {
 
@@ -50,8 +51,17 @@ export default function Topbar() {
             })
         }
         //获取登陆地址
-        await window.ethereum.request({ method: 'eth_requestAccounts' ,})
-            .then(() => {
+        //eth_requestAccounts 内置了 wallet_requestPermissions call,
+        //但这里选择call wallet_requestPermissions，可以每次弹窗，让用户选择钱包。
+        //当然用户在浏览器切换钱包地址，也可以反映到网站上。
+        const accounts = await window.ethereum.request({
+            method: "wallet_requestPermissions",
+            params: [{
+                eth_accounts: {}
+            }]
+        }).then(() => ethereum.request({
+            method: 'eth_requestAccounts'
+            }).then(() => {
                 const logo = document.querySelector(`.${styles.logon}`);
                 logo.classList.add(styles.logoconnected);
                 const logged = document.querySelector(`.${styles.logged}`);
@@ -64,7 +74,8 @@ export default function Topbar() {
                 } else {
                     console.error(error);
                 }
-            });
+            })
+        );
             
         const ethers = require("ethers");
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -99,24 +110,16 @@ export default function Topbar() {
         setShowPopup(false);
     }
 
-    // const handleLogout = async () => {
-    //     const accounts = await window.ethereum.request({
-    //         method: "wallet_requestPermissions",
-    //         params: [{
-    //             eth_accounts: {}
-    //         }]
-    //     }).then(() => ethereum.request({
-    //         method: 'eth_requestAccounts'
-    //     }))
-        
-    //     const account = accounts[0]
-    // }
+    const handleLogout = async () => {
+        const logo = document.querySelector(`.${styles.logon}`);
+        logo.classList.remove(styles.logoconnected);
+        const logged = document.querySelector(`.${styles.logged}`);
+        logged.classList.remove(styles.loggedconnected);
+        setShowPopup(false);
+    }
 
     return (
     <div id="header" className={styles.header}>
-        {/* <Head>
-            <script src="https://cdn.jsdelivr.net/npm/@metamask/detect-provider"></script>
-        </Head> */}
         <style>{`
             .${styles.darkmode} .${styles.darklight} svg {
                 fill: #ffce45;
@@ -147,12 +150,14 @@ export default function Topbar() {
                 <path xmlns="http://www.w3.org/2000/svg" fill="#0473ff" data-original="#219b38" d="M361.7 75.6L265 268.1l-9-25.5 2.7-124.6L338.2 8.5z" />
                 <path xmlns="http://www.w3.org/2000/svg" d="M338.2 8.5l-82.2 234-80.4 228.9a48 48 0 01-45.3 32.1H0l173.8-495h164.4z" fill="#0473ff" data-original="#518ef8" />
             </svg>
-            Milao
+            设备租赁DAPP
         </div>
         <div className={styles.headermenu}>
-            <a href="#" className="active">Find Job</a>
-            <a href="#">Company Review</a>
-            <a href="#">Find Salaries</a>
+            <a href="#" className="active">MarketPlace</a>
+            <Link href={{pathname:'/listnft',
+                         query:{currAddress:currAddress}
+                        }}>List NFT</Link>
+            <a href="#">Your NFTs</a>
         </div>
 
         <div className={styles.usersettings}>
@@ -174,9 +179,9 @@ export default function Topbar() {
                 <div className={styles.popup}>
                     <div className={styles.popupContent}>
                         <h4>Address: {currAddress}</h4>
-                        {/* <button className={styles.closeButton} onClick={handleLogout}>
+                        <button className={styles.closeButton} onClick={handleLogout}>
                             Logout
-                        </button> */}
+                        </button>
                         <button className={styles.closeButton} onClick={handleClosePopup}>
                             Close
                         </button>

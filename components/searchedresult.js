@@ -10,10 +10,16 @@ export default function Searchedresult() {
     const [jobDesc, setJobDesc] = useState(null);
 
     useEffect(()=>{
-        fetch('http://localhost:3000/jobs').
+        // fetch('http://localhost:3000/jobs').
+        //     then((res) => res.json()).then((res) => {
+        //         setJobs(res.data);
+        // });
+        
+        fetch('http://localhost:3000/getAllNfts').
             then((res) => res.json()).then((res) => {
-                setJobs(res.data);
-        })
+                // setJobs(res.data);
+                console.log("all nfts==", res.data);
+        });
                 
         const wrapper = document.querySelector("#wrapper");
 
