@@ -1,27 +1,38 @@
 import { useSearchParams } from 'next/navigation'
 import { useState } from "react";
-// import { uploadFileToIPFS, uploadJSONToIPFS } from "../pinata";
+// import { uploadFileToIPFS, uploadJSONToIPFS } from "./pinata.js";
+import { useRouter } from 'next/router.js';
 // import Marketplace from '../Marketplace.json';
 // import { useLocation } from "react-router";
+// const fs = require('fs');
+// import fs from 'fs';
 
 function listnft() {
     const searchParams = useSearchParams();
     const currAddress = searchParams.get('currAddress');
-
-    console.log("currAddress===", currAddress);
+    const [fileURL, setFileURL] = useState(null);
     const [formParams, updateFormParams] = useState({ name: '', description: '', price: ''});
     const [message, updateMessage] = useState('');
 
+    const router = useRouter();
+
+
     async function OnChangeFile(e) {
         var file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
         //check for file extension
         try {
             //upload the file to IPFS
-            const response = await uploadFileToIPFS(file);
-            if(response.success === true) {
-                console.log("Uploaded image to Pinata: ", response.pinataURL)
-                setFileURL(response.pinataURL);
-            }
+            await fetch('http://localhost:3000/nft/uploadFile', {
+                method: 'POST',
+                body: formData
+            }).then((res) => res.json()).then((res)=>{
+                if (res.success == true) {
+                    console.log("Uploaded image to Pinata: ", res.pinataURL)
+                    setFileURL(res.pinataURL);
+                }
+            })
         }
         catch(e) {
             console.log("Error during file upload", e);
@@ -41,8 +52,12 @@ function listnft() {
 
         try {
             //upload the metadata JSON to IPFS
-            const response = await uploadJSONToIPFS(nftJSON);
-            if(response.success === true){
+            const response = await fetch('http://localhost:3000/nft/listnft', {
+                method: 'POST',
+                body: nftJSON
+            })
+            // const response = await uploadJSONToIPFS(nftJSON);
+            if(response.result === true){
                 console.log("Uploaded JSON to Pinata: ", response)
                 return response.pinataURL;
             }
@@ -50,39 +65,71 @@ function listnft() {
         catch(e) {
             console.log("error uploading JSON metadata:", e)
         }
+        return;
     }
 
     async function listNFT(e) {
         e.preventDefault();
 
-        //Upload data to IPFS
+        const {name, description, price} = formParams;
+        //Make sure that none of the fields are empty
+        if( !name || !description || !price || !fileURL) {
+            console.log("fileURL==",fileURL);
+            return;
+        }
+        const nftJSON = {
+            name, description, price, image: fileURL
+        }
+        console.log("nftJSON===",nftJSON);
+        console.log("JSON.stringify(nftJSON)===",JSON.stringify(nftJSON));
+
         try {
-            const metadataURL = await uploadMetadataToIPFS();
-            //After adding your Hardhat network to your metamask, this code will get providers and signers
-            const provider = new ethers.providers.Web3Provider(window.ethereum);
-            const signer = provider.getSigner();
-            updateMessage("Please wait.. uploading (upto 5 mins)")
+            //upload the metadata JSON to IPFS
+            await fetch('http://localhost:3000/nft/listnft', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(nftJSON)
+            }).then((res) => res.json()).then((res)=>{
+                console.log("res==", res);
+                if (res.success == true) {
+                    alert("NFT listed successfully!");
+                }
+            })
+            // const response = await uploadJSONToIPFS(nftJSON);
+            // if(response.result === true){
+            //     console.log("Uploaded JSON to Pinata: ", response.pinataURL)
+            // }
+            // const metadataURL = await uploadMetadataToIPFS();
+            // //After adding your Hardhat network to your metamask, this code will get providers and signers
+            // const provider = new ethers.providers.Web3Provider(window.ethereum);
+            // const signer = provider.getSigner();
+            // updateMessage("Please wait.. uploading (upto 5 mins)")
 
-            //Pull the deployed contract instance
-            let contract = new ethers.Contract(Marketplace.address, Marketplace.abi, signer)
+            // //Pull the deployed contract instance
+            // let contract = new ethers.Contract(Marketplace.address, Marketplace.abi, signer)
 
-            //massage the params to be sent to the create NFT request
-            const price = ethers.utils.parseUnits(formParams.price, 'ether')
-            let listingPrice = await contract.getListPrice()
-            listingPrice = listingPrice.toString()
+            // //massage the params to be sent to the create NFT request
+            // const price = ethers.utils.parseUnits(formParams.price, 'ether')
+            // let listingPrice = await contract.getListPrice()
+            // listingPrice = listingPrice.toString()
 
-            //actually create the NFT
-            let transaction = await contract.createToken(metadataURL, price, { value: listingPrice })
-            await transaction.wait()
+            // //actually create the NFT
+            // let transaction = await contract.createToken(metadataURL, price, { value: listingPrice })
+            // await transaction.wait()
 
-            alert("Successfully listed your NFT!");
             updateMessage("");
             updateFormParams({ name: '', description: '', price: ''});
-            window.location.replace("/")
+            // window.location.replace("/")
         }
-        catch(e) {
-            alert( "Upload error"+e )
+        catch(error) {
+            alert( "error message: " + error);
         }
+    }
+
+    const handleBack = () => {
+        router.back();
     }
 
     return (
@@ -113,6 +160,9 @@ function listnft() {
                 <div className="text-green text-center">{message}</div>
                 <button onClick={listNFT} className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">
                     List NFT
+                </button>
+                <button onClick={handleBack} className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">
+                    Back
                 </button>
             </form>
         </div>
