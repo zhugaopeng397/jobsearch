@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image'
+import { useRouter } from 'next/navigation';
 
 import styles from './searchedresult.module.css'
 import stylest from './topbar.module.css';
+import Router from 'next/router';
 
 export default function Searchedresult() {
     const [jobs, setJobs] = useState(null);
+    const [dataFetched, updateFetched] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
     const [jobDesc, setJobDesc] = useState(null);
+    const [data, updateData] = useState([]);
+    const { push } = useRouter();
 
     useEffect(()=>{
         // fetch('http://localhost:3000/jobs').
@@ -15,12 +20,6 @@ export default function Searchedresult() {
         //         setJobs(res.data);
         // });
         
-        fetch('http://localhost:3000/getAllNfts').
-            then((res) => res.json()).then((res) => {
-                // setJobs(res.data);
-                console.log("all nfts==", res.data);
-        });
-                
         const wrapper = document.querySelector("#wrapper");
 
         const jobCards = document.querySelectorAll(`.${styles.jobcard}`);
@@ -46,6 +45,32 @@ export default function Searchedresult() {
         return diffDays+'D';
     }
 
+    async function getAllNFTsWithAPI() {
+        const nfts = await fetch('http://localhost:3000/getAllNfts').
+            then((res) => res.json()).then((res) => {
+                // setJobs(res.data);
+                // console.log("all nfts==", res);
+
+                return res.nfts.map(i => {
+                    let item = {
+                        tokenId: i.tokenId,
+                        // seller: seller,
+                        // owner: nftOwner,
+                        price: i.raw.metadata.price,
+                        image: i.raw.metadata.image,
+                        name: i.raw.metadata.name,
+                        description: i.raw.metadata.description
+                    }
+                    return item;
+                })
+            });
+
+        console.log("all nfts==", nfts);
+
+        setJobs(nfts);
+        updateFetched(true);
+    }
+
     async function handleJobClick(job) {
         
         const number = Math.floor(Math.random() * 10);
@@ -54,12 +79,13 @@ export default function Searchedresult() {
         const wrapper = document.querySelector("#wrapper");
         wrapper.classList.add(styles.detailpage);
         wrapper.scrollTop = 0;
-        await (fetch(`http://localhost:3000/job?jobid=${job.jobid}`).
-            then((res) => res.json()).then((res) => {
-                setJobDesc(res.data);
-                setSelectedJob(job);
+        setSelectedJob(job);
+        // await (fetch(`http://localhost:3000/job?jobid=${job.jobid}`).
+        //     then((res) => res.json()).then((res) => {
+        //         setJobDesc(res.data);
+        //         setSelectedJob(job);
                 
-        }))
+        // }))
     }
 
     async function handleJobApply(job) {
@@ -70,6 +96,17 @@ export default function Searchedresult() {
                     console.log('nft minted!');
                 }
         }))
+    }
+
+    async function buyNFT(job) {
+        console.log("jobid="+job.tokenId);
+        // push(`/buynft?tokenId=${job.tokenId}`);
+
+        Router.push({
+            pathname: '/buynft',
+            query: { tokenId: job.tokenId },
+          })
+
     }
 
     async function handleJobMessage(job) {
@@ -83,6 +120,9 @@ export default function Searchedresult() {
         }))
     }
 
+    if(!dataFetched) {
+        getAllNFTsWithAPI();
+    }
     return (
         <div className={styles.searchedjobs}>
             <div className={styles.searchedbar}>
@@ -93,20 +133,20 @@ export default function Searchedresult() {
                 {jobs && jobs.map((job) => (
                     <div className={styles.jobcard} onClick={() => handleJobClick(job)}>
                         <div className={styles.jobcardheader}> 
-                            <img src={`/images/${job.jobid}.svg`} alt="Company Icon" />
+                            <img src={job.image} alt="NFT Image" />
                             <div className={styles.menudot}></div>
                         </div>
-                        <div className={styles.jobcardtitle}>{job.jobtitle}</div>
+                        <div className={styles.jobcardtitle}>{job.name}</div>
                         <div className={styles.jobcardsubtitle}>
-                            {job.jobsubtitle}
+                            {job.price} ETH
                         </div>
                         <div className={styles.jobdetailbuttons}>
-                            <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.employeetype}</button>
-                            <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.experience}</button>
-                            <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.worklevel}</button>
+                            <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.description}</button>
+                            <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.description}</button>
+                            <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.description}</button>
                         </div>
                         <div className={styles.jobcardbuttons}>
-                            <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => handleJobApply(job)}>Apply Now</button>
+                            <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => buyNFT(job)}>Buy Now</button>
                             <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`} onClick={() => handleJobMessage(job)}>Messages</button>
                         </div>
                     </div>
@@ -119,11 +159,11 @@ export default function Searchedresult() {
                     <div className={styles.joboverviewcard} onClick={() => handleJobClick(job)}>
                         <div className={`${styles.jobcard} ${styles.overviewcard}`}>
                             <div className={styles.overviewwrapper}>
-                                <img src={`/images/${job.jobid}.svg`} alt="Company Icon" />
+                                <img src={job.image} alt="NFT Image" />
                                 <div className={styles.overviewdetail}>
-                                    <div className={styles.jobcardtitle}>{job.jobtitle}</div>
+                                    <div className={styles.jobcardtitle}>{job.name}</div>
                                     <div className={styles.jobcardsubtitle}>
-                                        {job.joblocation}
+                                        {job.price} ETH
                                     </div>
                                 </div>
                                 <svg className={styles.heart} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" >
@@ -131,10 +171,10 @@ export default function Searchedresult() {
                                 </svg>
                             </div>
                             <div className={styles.joboverviewbuttons}>
-                                <div className={`${styles.searchbuttons} ${styles.timebutton}`}>{job.employeetype}</div>
-                                <div className={`${styles.searchbuttons} ${styles.levelbutton}`}>{job.worklevel}</div>
-                                <div className={styles.jobstat}>{job.jobstat}</div>
-                                <div className={styles.jobday}>{diffDay(job.postdate)}</div>
+                                <div className={`${styles.searchbuttons} ${styles.timebutton}`}>{job.name}</div>
+                                <div className={`${styles.searchbuttons} ${styles.levelbutton}`}>{job.name}</div>
+                                <div className={styles.jobstat}>{job.description}</div>
+                                {/* <div className={styles.jobday}>{diffDay(job.postdate)}</div> */}
                             </div>
                         </div>
                     </div>
@@ -146,7 +186,7 @@ export default function Searchedresult() {
                 <div className={styles.jobexplain}>
                     <img className={styles.jobbg} src={selectedJob.src} />
                     <div className={styles.joblogos}>
-                        <img src={`/images/${selectedJob.jobid}.svg`} alt="Company Icon" />
+                        <img src={selectedJob.image} alt="NFT Image" />
                     </div>
                     <div className={styles.jobexplaincontent}>
                         <div className={styles.jobtitlewrapper}>

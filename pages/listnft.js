@@ -1,13 +1,20 @@
 import { useSearchParams } from 'next/navigation'
 import { useState } from "react";
-// import { uploadFileToIPFS, uploadJSONToIPFS } from "./pinata.js";
 import { useRouter } from 'next/router.js';
-// import Marketplace from '../Marketplace.json';
-// import { useLocation } from "react-router";
-// const fs = require('fs');
-// import fs from 'fs';
+import nftcontract from '../NFTContract.json';
+const {  testauth, uploadFromBuffer, uploadFileToIPFS, uploadJSONToIPFS } = require("../lib/pinata.js");
+const ethers = require('ethers');
 
-function listnft() {
+
+
+// const alchemyKey =  process.env.REACT_APP_TESTNET_ALCHEMY_KEY;
+
+// const provider = new ethers.providers.AlchemyProvider(
+//   'goerli',
+//   alchemyKey
+// );
+
+function Listnft() {
     const searchParams = useSearchParams();
     const currAddress = searchParams.get('currAddress');
     const [fileURL, setFileURL] = useState(null);
@@ -17,7 +24,7 @@ function listnft() {
     const router = useRouter();
 
 
-    async function OnChangeFile(e) {
+    async function OnChangeFileForAPI(e) {
         var file = e.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
@@ -36,6 +43,24 @@ function listnft() {
         }
         catch(e) {
             console.log("Error during file upload", e);
+        }
+    }
+
+    async function OnChangeFile(e) {
+        var file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        try {
+            //upload the file to IPFS
+            const response = await uploadFileToIPFS(file);
+            console.log("response===",response);
+            if(response.success === true) {
+                console.log("Uploaded image to Pinata: ", response.pinataURL)
+                setFileURL(response.pinataURL);
+            }
+        }
+        catch(error) {
+            console.log("Error during file upload", error);
         }
     }
 
@@ -84,56 +109,48 @@ function listnft() {
         console.log("JSON.stringify(nftJSON)===",JSON.stringify(nftJSON));
 
         try {
-            //upload the metadata JSON to IPFS
-            await fetch('http://localhost:3000/nft/listnft', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(nftJSON)
-            }).then((res) => res.json()).then((res)=>{
-                console.log("res==", res);
-                if (res.success == true) {
-                    alert("NFT listed successfully!");
-                }
-            })
-            // const response = await uploadJSONToIPFS(nftJSON);
-            // if(response.result === true){
-            //     console.log("Uploaded JSON to Pinata: ", response.pinataURL)
-            // }
-            // const metadataURL = await uploadMetadataToIPFS();
-            // //After adding your Hardhat network to your metamask, this code will get providers and signers
-            // const provider = new ethers.providers.Web3Provider(window.ethereum);
-            // const signer = provider.getSigner();
-            // updateMessage("Please wait.. uploading (upto 5 mins)")
+            const response = await uploadJSONToIPFS(nftJSON);
 
-            // //Pull the deployed contract instance
-            // let contract = new ethers.Contract(Marketplace.address, Marketplace.abi, signer)
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            const signer = provider.getSigner();
+            updateMessage("Please wait.. uploading (upto 5 mins)")
 
-            // //massage the params to be sent to the create NFT request
-            // const price = ethers.utils.parseUnits(formParams.price, 'ether')
-            // let listingPrice = await contract.getListPrice()
-            // listingPrice = listingPrice.toString()
+            //Pull the deployed contract instance
+            let contractNft = new ethers.Contract(nftcontract.address, nftcontract.abi, signer)
 
-            // //actually create the NFT
-            // let transaction = await contract.createToken(metadataURL, price, { value: listingPrice })
-            // await transaction.wait()
 
+            if(response.success === true){
+                console.log("Uploaded JSON to Pinata: ", response.pinataURL);
+              
+                // const metadataURL = await uploadMetadataToIPFS(metadata);
+                const price = ethers.utils.parseUnits(nftJSON.price, 'ether');
+                console.log("price===", price);
+                let listingPrice = await contractNft.getListPrice();
+                listingPrice = listingPrice.toString();
+                console.log("listingPrice===", listingPrice);
+          
+                //actually create the NFT
+                let transaction = await contractNft.createToken(response.pinataURL, price, { value: listingPrice });
+                await transaction.wait();
+                alert("NFT listed successfully!");
+            }
             updateMessage("");
             updateFormParams({ name: '', description: '', price: ''});
-            // window.location.replace("/")
+            setFileURL("");
         }
         catch(error) {
             alert( "error message: " + error);
         }
     }
 
-    const handleBack = () => {
-        router.back();
+    const handleGoHome = () => {
+        router.push('/');
+        // window.location.href = "http://localhost:3010/#";
     }
 
     return (
         <div className="">
+        <a href="/" className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">Back</a>
         <div className="flex flex-col place-items-center mt-10" id="nftForm">
             <form className="bg-white shadow-md rounded px-8 pt-4 pb-8 mb-4">
             <h3 className="text-center font-bold text-purple-500 mb-8">Upload your NFT to the marketplace</h3>
@@ -161,13 +178,14 @@ function listnft() {
                 <button onClick={listNFT} className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">
                     List NFT
                 </button>
-                <button onClick={handleBack} className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">
+                {/* <button onClick={handleGoHome} className="font-bold mt-10 w-full bg-purple-500 text-white rounded p-2 shadow-lg">
                     Back
-                </button>
+                </button> */}
+                <br></br><br></br>
             </form>
         </div>
         </div>
     )
 }
 
-export default listnft;
+export default Listnft;

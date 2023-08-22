@@ -153,11 +153,13 @@ export default function Topbar() {
             设备租赁DAPP
         </div>
         <div className={styles.headermenu}>
-            <a href="#" className="active">MarketPlace</a>
+            <Link href="/" className="active">MarketPlace</Link>
             <Link href={{pathname:'/listnft',
                          query:{currAddress:currAddress}
                         }}>List NFT</Link>
-            <a href="#">Your NFTs</a>
+            <Link href={{pathname:'/mynft',
+                         query:{currAddress:currAddress}
+                        }}>Your NFTs</Link>
         </div>
 
         <div className={styles.usersettings}>

@@ -6,18 +6,24 @@
     "start": "next start"
   },
   "dependencies": {
+    "alchemy-sdk": "^2.9.2",
     "autoprefixer": "^10.4.14",
+    "axios": "^1.4.0",
+    "babel": "^6.23.0",
     "date-fns": "^2.30.0",
     "dotenv": "^16.3.1",
+    "fs": "^0.0.1-security",
     "gray-matter": "^4.0.3",
     "hardhat": "^2.16.0",
     "next": "latest",
     "postcss": "^8.4.26",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-router-dom": "^6.14.2",
     "remark": "^14.0.3",
     "remark-html": "^15.0.2",
     "sass": "^1.62.1",
-    "tailwindcss": "^3.3.3"
+    "tailwindcss": "^3.3.3",
+    "web3modal": "^1.9.12"
   }
 }
