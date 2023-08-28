@@ -12,117 +12,117 @@ export default function Sidebar() {
                 }
             `}</style>
             <div className={styles.alert}>
-                <div className={styles.alerttitle}>Create Job Alert</div>
-                <div className={styles.alertsubtitle}>Create a job alert now and never miss a job</div>
-                <input type="text" placeholder="Enter job keyword" />
-                <button className={styles.searchbuttons}>Create Job Alerts</button>
+                <div className={styles.alerttitle}>上新提醒</div>
+                <div className={styles.alertsubtitle}>输入设备信息关键词，新型号不错过！</div>
+                <input type="text" placeholder="输入设备机型" />
+                <button className={styles.searchbuttons}>关注</button>
             </div>
             <div className={styles.jobtime}>
-                <div className={styles.jobtimetitle}>Type of Employment</div>
+                <div className={styles.jobtimetitle}>机床设备</div>
                 <div className={styles.jobwrapper}>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job1" className={styles.jobstyle} />
-                        <label for="job1">Full Time Jobs</label>
+                        <label for="job1">加工中心</label>
                         <span className={styles.jobnumber}>56</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job2" className={styles.jobstyle} />
-                        <label for="job2">Part Time Jobs</label>
+                        <label for="job2">精雕机</label>
                         <span className={styles.jobnumber}>43</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job3" className={styles.jobstyle} />
-                        <label for="job3">Remote Jobs</label>
+                        <label for="job3">数控钻床</label>
                         <span className={styles.jobnumber}>24</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job4" className={styles.jobstyle} />
-                        <label for="job4">Internship Jobs</label>
+                        <label for="job4">数控磨床</label>
                         <span className={styles.jobnumber}>27</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job5" className={styles.jobstyle} />
-                        <label for="job5">Contract</label>
+                        <label for="job5">数控冲床</label>
                         <span className={styles.jobnumber}>76</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job6" className={styles.jobstyle} />
-                        <label for="job6">Training Jobs</label>
+                        <label for="job6">数控铣床</label>
                         <span className={styles.jobnumber}>28</span>
                     </div>
                 </div>
             </div>
             <div className={styles.jobtime}>
-                <div className={styles.jobtimetitle}>Seniority Level</div>
+                <div className={styles.jobtimetitle}>注塑相关</div>
                 <div className={styles.jobwrapper}>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job7" className={styles.jobstyle} />
-                        <label for="job7">Student Level</label>
+                        <label for="job7">电动注塑机</label>
                         <span className={styles.jobnumber}>98</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job8" className={styles.jobstyle} />
-                        <label for="job8">Entry Level</label>
+                        <label for="job8">伺服注塑机</label>
                         <span className={styles.jobnumber}>44</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job9" className={styles.jobstyle}  />
-                        <label for="job9">Mid Level</label>
+                        <label for="job9">吹塑机</label>
                         <span className={styles.jobnumber}>35</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job10" className={styles.jobstyle}  />
-                        <label for="job10">Senior Level</label>
+                        <label for="job10">混色机</label>
                         <span className={styles.jobnumber}>29</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job11" className={styles.jobstyle} />
-                        <label for="job11">Directors</label>
+                        <label for="job11">粉碎回收机</label>
                         <span className={styles.jobnumber}>26</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job12" className={styles.jobstyle} />
-                        <label for="job12">VP or Above</label>
+                        <label for="job12">挤出机</label>
                         <span className={styles.jobnumber}>56</span>
                     </div>
                 </div>
             </div>
             <div className={styles.jobtime}>
-                <div className={styles.jobtimetitle}>Salary Range</div>
+                <div className={styles.jobtimetitle}>切割设备</div>
                 <div className={styles.jobwrapper}>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job13" className={styles.jobstyle} />
-                        <label for="job13">$700 - $1000</label>
+                        <label for="job13">激光切割机</label>
                         <span className={styles.jobnumber}>49</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job14" className={styles.jobstyle} />
-                        <label for="job14">$1000 - $1200</label>
+                        <label for="job14">中走丝</label>
                         <span className={styles.jobnumber}>67</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job15" className={styles.jobstyle} />
-                        <label for="job15">$1200 - $1400</label>
+                        <label for="job15">激光焊接机</label>
                         <span className={styles.jobnumber}>24</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job16" className={styles.jobstyle} />
-                        <label for="job16">$1500 - $1800</label>
+                        <label for="job16">激光打标机</label>
                         <span className={styles.jobnumber}>27</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job17" className={styles.jobstyle}  />
-                        <label for="job17">$2000 - $3000</label>
+                        <label for="job17">激光清洗机</label>
                         <span className={styles.jobnumber}>76</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job18" className={styles.jobstyle}  />
-                        <label for="job18">$3000 - $4000</label>
+                        <label for="job18">线切割</label>
                         <span className={styles.jobnumber}>22</span>
                     </div>
                     <div className={styles.typecontainer}>
                         <input type="checkbox" id="job19" className={styles.jobstyle} />
-                        <label for="job19">$4000 - $5000</label>
+                        <label for="job19">切管机</label>
                         <span className={styles.jobnumber}>18</span>
                     </div>
                 </div>

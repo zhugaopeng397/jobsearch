@@ -135,8 +135,8 @@ export default function Searchedresult() {
     return (
         <div className={styles.searchedjobs}>
             <div className={styles.searchedbar}>
-                <div className={styles.searchedshow}>Showing 46 Jobs</div>
-                <div className={styles.searchedsort}>Sort by: <span className={styles.posttime}>Newest Post </span><span className={styles.menuicon}>▼</span></div>
+                <div className={styles.searchedshow}>Showing 23 NFTs</div>
+                <div className={styles.searchedsort}>Sort by: <span className={styles.posttime}>最近上架 </span><span className={styles.menuicon}>▼</span></div>
             </div>
             <div className={styles.jobcards}>
                 {jobs && jobs.map((job) => (
@@ -155,8 +155,8 @@ export default function Searchedresult() {
                             <button className={`${styles.searchbuttons} ${styles.detailbutton}`}>{job.description}</button>
                         </div>
                         <div className={styles.jobcardbuttons}>
-                            <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => buyNFT(job)}>Buy Now</button>
-                            <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`} onClick={() => updateNft(job)}>Messages</button>
+                            <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => buyNFT(job)}>我要购买</button>
+                            <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`} onClick={() => updateNft(job)}>设备详情</button>
                         </div>
                     </div>
                 ))}

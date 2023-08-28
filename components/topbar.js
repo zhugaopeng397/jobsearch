@@ -153,13 +153,13 @@ export default function Topbar() {
             设备租赁DAPP
         </div>
         <div className={styles.headermenu}>
-            <Link href="/" className="active">MarketPlace</Link>
+            <Link href="/" className="active">设备专区</Link>
             <Link href={{pathname:'/listnft',
                          query:{currAddress:currAddress}
-                        }}>List NFT</Link>
+                        }}>上架设备</Link>
             <Link href={{pathname:'/mynft',
                          query:{currAddress:currAddress}
-                        }}>Your NFTs</Link>
+                        }}>我的账户</Link>
         </div>
 
         <div className={styles.usersettings}>
@@ -175,7 +175,7 @@ export default function Topbar() {
             </div>
             {/* <img className={styles.userprofile} src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/3364143/download+%283%29+%281%29.png" alt="" />
             <div className={styles.username}>Suhayel Nasim</div> */}
-            <div className={styles.logon} onClick={() => handleLogon()}>Collect wallet</div>
+            <div className={styles.logon} onClick={() => handleLogon()}>连接钱包</div>
             <div className={styles.logged} onClick={handleLogged}></div>
             {showPopup && (
                 <div className={styles.popup}>
