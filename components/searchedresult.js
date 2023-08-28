@@ -120,6 +120,15 @@ export default function Searchedresult() {
         }))
     }
 
+    async function updateNft(job) {
+        console.log("jobid="+job.tokenId);
+
+        Router.push({
+            pathname: '/updatenft',
+            query: { tokenId: job.tokenId },
+          })
+    }
+
     if(!dataFetched) {
         getAllNFTsWithAPI();
     }
@@ -131,8 +140,8 @@ export default function Searchedresult() {
             </div>
             <div className={styles.jobcards}>
                 {jobs && jobs.map((job) => (
-                    <div className={styles.jobcard} onClick={() => handleJobClick(job)}>
-                        <div className={styles.jobcardheader}> 
+                    <div className={styles.jobcard} >
+                        <div className={styles.jobcardheader} onClick={() => handleJobClick(job)}> 
                             <img src={job.image} alt="NFT Image" />
                             <div className={styles.menudot}></div>
                         </div>
@@ -147,7 +156,7 @@ export default function Searchedresult() {
                         </div>
                         <div className={styles.jobcardbuttons}>
                             <button className={`${styles.searchbuttons} ${styles.cardbuttons}`} onClick={() => buyNFT(job)}>Buy Now</button>
-                            <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`} onClick={() => handleJobMessage(job)}>Messages</button>
+                            <button className={`${styles.searchbuttons} ${styles.cardbuttonsmsg}`} onClick={() => updateNft(job)}>Messages</button>
                         </div>
                     </div>
                 ))}
